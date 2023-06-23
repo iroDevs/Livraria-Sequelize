@@ -25,6 +25,8 @@ npx sequelize seed:generate --name=NOME_DA_SEEDER
 ```
 
 
+
+
 ## Rodar todas as seeds:
 ```bash
 npx sequelize db:seed:all 

@@ -5,7 +5,8 @@ class Autor extends Model {
         super.init({
             nome: DataTypes.STRING,
         },{
-            sequelize
+            sequelize,
+            tableName: 'autores',
         })
     }
 }
