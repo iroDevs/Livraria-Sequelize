@@ -3,9 +3,7 @@ const routeAutor = express.Router();
 const autorController = require("../controllers/autorController");
 
 
-routeAutor.get("/",(req,res)=> {
-    
-});
+routeAutor.get("/",autorController.getAllAutores);
 
 routeAutor.get("/{id}",(req,res)=> {
     
