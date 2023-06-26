@@ -9,11 +9,18 @@ async function getLivroByName(titulo){
 
 async function createLivro(livroObjetc,categoriasArray) {
     
-    const livro = await Livro.create(livroObjetc)
 
-   const categoria = await Categoria.findByPk(1); 
+    const livro = await Livro.create(livroObjetc);
+
+    categoriasArray.forEach( async (categoria_id) => {
+        const categoria = await Categoria.findByPk(categoria_id);  
+
+        await livro.addCategoria(categoria);
+    });
+
+  
     
-    await livro.addCategoria(categoria);
+   
 
     
     return livro; 
