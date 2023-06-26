@@ -207,7 +207,119 @@ module.exports = Autor;
 - no nosso exemplo temos livro e categoria , perceba que um livro possui varias categorias (n) e uma categoria pertence a varios livros (n) 
 oque nos gera a necessidade de uma tabela pivô tendo os ids de livros e os ids de categoria
 
-livro_categoria
+livro_categoria (Migration)
+
+```js
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    return queryInterface.createTable('livro_categoria', {
+     id: {
+       type: Sequelize.INTEGER,
+       primaryKey: true,
+       autoIncrement: true,
+       allowNull:false,
+     },
+     categoria_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: { model: "categorias" , key: 'id'},
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+     },
+     livro_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: { model: "livros" , key: 'id'},
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+     },
+     created_at: {
+       type: Sequelize.DATE,
+       allowNull:false,
+     },
+     updated_at: {
+       type: Sequelize.DATE,
+       allowNull:false,
+     },
+ 
+    });
+   },
+ 
+   async down (queryInterface, Sequelize) {
+    return queryInterface.dropTable('livro_categoria');
+   }
+ };
+
+```
+
+depois de criar temos que criar os relacionamentos nas models respectivas porem ao inves de usar o belongto e o hasMany ou hasOne vamos usar o BelongMany nas 2 modesl veja o exemplo
+Livro Model e Categoria model:
+```js
+class Livro extends Model {
+    static init(sequelize) {
+        super.init({
+            titulo:DataTypes.STRING,
+            preco:DataTypes.DECIMAL,
+            descricao:DataTypes.STRING,
+            estoque:DataTypes.INTEGER,
+        },{
+            sequelize,
+            tableName: 'livros',
+            freezeTableName: true
+        })
+    }
+    static associate(models){
+        this.belongsTo(models.Autor, { foreignKey: 'autor_id', as: 'escritor' });
+        //Esse relacionamento abaixo é oque liga a tabela livro_categoria
+        this.belongsToMany(models.Categoria, {foreignKey: 'livro_id', through: 'livro_categoria',as: 'categorias'});
+    }
+}
+
+
+
+// Categoria Model:
+
+class Categoria extends Model {
+    static init(sequelize) {
+        super.init({
+            nome: DataTypes.STRING,
+        },{
+            sequelize,
+            tableName: 'categorias',
+            freezeTableName: true
+            
+        })
+    }
+    static associate(models){
+        this.belongsToMany(models.Livro, { foreignKey: 'categoria_id', through: 'livro_categoria',as: 'livros'});
+    }
+}
+```
+> Lembre que a foreignKey é a chave que vai apontar seu modelo ou seja na model Categoria a chave sempre vai ser categoria_id na do livro vai ser livro_id
+> through é a tabela pivo , e as é um apelido para esse relacionamento
+
+agora temos acesso há alguns metodos automagicos do sequelize como o por exemplo **addNOME_DO_MODELO**
+
+exemplo:
+todo livro precisa de uma categoria então ao criar um livro deve se ter um registro na livro_categoria afinal o livro vai ter uma categoria meu reposity
+
+```js
+async function createLivro(livroObjetc,categoriasArray) {
+    //Cria o livro
+    const livro = await Livro.create(livroObjetc)
+    //Acha a categoria que desejo adcionar de exemplo passei o id = 1
+   const categoria = await Categoria.findByPk(1); 
+    // Agora chama esse metodo automatico que é o Model que vai receber + add + Nome da model que vai ser dada
+    //Exemplo abaixo : o estou adcinando uma categoria ao livro
+    await livro.addCategoria(categoria);
+
+    
+    return livro; 
+}
+```
 
 ### **LEMBRE DE INSTANCIAR NA CONEXÃO SUAS ASSOCIAÇÕES**
 
