@@ -3,25 +3,16 @@ const LivroController = require("../controllers/livroController")
 const routeLivro = express.Router();
 
 
-routeLivro.get("/",(req,res)=> {
-    
-});
+routeLivro.get("/",LivroController.getAllLivro);
 
-routeLivro.get("/:id",(req,res)=> {
-    
-    
-});
+routeLivro.get("/:id",LivroController.getLivroById);
 
 routeLivro.post("/",LivroController.createLivro);
 
 
-routeLivro.put("/{id}",(req,res)=> {
+routeLivro.put("/:id",LivroController.updateLivro);
 
-});
-
-routeLivro.delete("/{id}",(req,res)=>{
-
-});
+routeLivro.delete("/:id",LivroController.deleteLivro);
 
 
 module.exports = routeLivro;

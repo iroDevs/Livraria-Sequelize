@@ -1,28 +1,57 @@
 const LivroRepository = require("../Repositories/livroRepository");
 
-async function validateLivro(livro,categorias){
+async function validateCreateLivro(livro,categorias){
 
- const LivroExists = await LivroRepository.getLivroByName(livro.titulo);
+    const LivroExists = await LivroRepository.getLivroByName(livro.titulo);
 
- if (LivroExists) {
-    return {
-        status: 401,
-        data: { erro: "Livro ja existe" }
+    if (LivroExists) {
+        return {
+            status: 401,
+            erro: "o livro ja existe",
+            data: LivroExists,
+        }
     }
- }
- console.log("as categorias aqui",categorias);
 
- const response = await LivroRepository.createLivro(livro,categorias);
+    const response = await LivroRepository.createLivro(livro,categorias);
 
+    if (response) {
+        return {
+            status: 201,
+            data: response,
+        }
+    } else {
+        return {
+            status: 501,
+            data: response,
+            erro: "algo deu errado no banco de dados",
+        }
+    }
 
- return {
-    status: 201,
-    data: response,
- }
+}
+
+async function validateUpdateLivro(id,livro,categorias){
+
+     const response = await LivroRepository.updateLivro(id,livro,categorias);
+
+     if (response) {
+        return {
+            status: 202,
+            data: { message: "foi um sucesso a atualização", response,},
+         }
+    } else {
+        return {
+            status: 501,
+            data:{message: "o livro n foi atualizado", response,},
+            erro: "algo deu errado no banco de dados",
+         }
+    }
 
 }
 
 
+
+
 module.exports = {
-    validateLivro,
+    validateCreateLivro,
+    validateUpdateLivro,
 }
