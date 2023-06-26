@@ -5,8 +5,14 @@ class Categoria extends Model {
         super.init({
             nome: DataTypes.STRING,
         },{
-            sequelize
+            sequelize,
+            tableName: 'categorias',
+            freezeTableName: true
+            
         })
+    }
+    static associate(models){
+        this.belongsToMany(models.Livro, { foreignKey: 'categoria_id', through: 'livro_categoria',as: 'livros'});
     }
 }
 

@@ -17,6 +17,12 @@ npx sequelize migration:create --name=NOME_DA_MIGRATION
 npx sequelize db:migrate
 ```
 
+## Voltar uma migration 
+
+```bash
+npx sequelize db:migrate:undo --name NOME_DA_MIGRATION
+```
+
 # Seeder
 
 ## Criar seeds

@@ -3,35 +3,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return queryInterface.createTable('livros', {
+    return queryInterface.createTable('livro_categoria', {
      id: {
        type: Sequelize.INTEGER,
        primaryKey: true,
        autoIncrement: true,
        allowNull:false,
      },
-     titulo: {
-       type: Sequelize.STRING,
-       allowNull:false,
-     },
-     autor_id:{
-      type:Sequelize.INTEGER,
-      allowNull: false,
-      references: {model: 'autores',key: 'id'},
-      onUpdate:'CASCADE',
-      onDelete:'CASCADE',
-     },
-     preco:{
-      type:Sequelize.DECIMAL,
-      allowNull: false,
-     },
-     descricao: {
-      type: Sequelize.STRING,
-      allowNull: true,
-     },
-     estoque: {
+     categoria_id: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      references: { model: "categorias" , key: 'id'},
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
+     },
+     livro_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      references: { model: "livros" , key: 'id'},
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
      },
      created_at: {
        type: Sequelize.DATE,
@@ -46,6 +37,6 @@ module.exports = {
    },
  
    async down (queryInterface, Sequelize) {
-    return queryInterface.dropTable('livros');
+    return queryInterface.dropTable('livro_categoria');
    }
  };

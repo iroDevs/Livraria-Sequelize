@@ -12,5 +12,7 @@ Categoria.init(connection);
 Livro.init(connection);
 
 Livro.associate(connection.models);
+Autor.associate(connection.models);
+Categoria.associate(connection.models);
 
 module.exports = connection;

@@ -140,6 +140,91 @@ module.exports = connection;
 
 Para fazer isso basta passar um __require("caminho_para_arquivo_de_conexao");__
 
+
+# Relacionamentos 1:n ou 1:1 
+
+Deve se criar na tabela onde está a chave estrangeira um metodo de associar os relacionamentos 
+exemplo : Livro possui uma chave autor_id
+```js
+const { Model , DataTypes } = require('sequelize');
+
+class Livro extends Model {
+    static init(sequelize) {
+        super.init({
+            titulo:DataTypes.STRING,
+            preco:DataTypes.DECIMAL,
+            descricao:DataTypes.STRING,
+            estoque:DataTypes.INTEGER,
+        },{
+            sequelize,
+            tableName: 'livros',
+        })
+    }
+    static associate(models){
+        this.belongsTo(models.Autor, { foreignKey: 'autor_id', as: 'escritor' });
+    }
+}
+   /*
+   Minha tabela Livro
+livro_id (chave primária)
+título
+autor_id (chave estrangeira referenciando a tabela "Autores")
+preço
+descrição
+estoque
+      */
+module.exports = Livro;
+
+```
+
+- E na model da tabela autor deve se informar que essa associação existe para o outro lado , ou seja o autor possui livros
+
+```js
+const { Model , DataTypes } = require('sequelize');
+
+class Autor extends Model {
+    static init(sequelize) {
+        super.init({
+            nome: DataTypes.STRING,
+        },{
+            sequelize,
+            tableName: 'autores',
+        })
+    }
+
+    static associate(models){
+        this.hasMany(models.Livro, { foreignKey: 'autor_id', as: 'escritor' });
+    }
+}
+
+module.exports = Autor;
+
+```
+
+
+# Relacionamento N - N 
+
+- no nosso exemplo temos livro e categoria , perceba que um livro possui varias categorias (n) e uma categoria pertence a varios livros (n) 
+oque nos gera a necessidade de uma tabela pivô tendo os ids de livros e os ids de categoria
+
+livro_categoria
+
+### **LEMBRE DE INSTANCIAR NA CONEXÃO SUAS ASSOCIAÇÕES**
+
+./database/index.js:
+
+```js
+//...
+Livro.associate(connection.models);
+Autor.associate(connection.models);
+//...
+
+```
+
+
 ### Utilidades
 
 agora seus modelos passam a ter acesso ao banco e a modificalos , basta chamar seus modelos e alteralos com seus metodos do sequelize que irá funcionar
+
+
+

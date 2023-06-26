@@ -9,6 +9,10 @@ class Autor extends Model {
             tableName: 'autores',
         })
     }
+
+    static associate(models){
+        this.hasMany(models.Livro, { foreingKey: 'autor_id', as: 'escritor' });
+    }
 }
 
 module.exports = Autor;
