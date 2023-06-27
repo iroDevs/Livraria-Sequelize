@@ -57,7 +57,7 @@ async function getLivroById(req,res){
 
 async function getAllLivro(req,res){
     const response = await LivroRepository.getAllLivro();
-    return response;
+    return res.status(200).json(response);
 }
 
 
