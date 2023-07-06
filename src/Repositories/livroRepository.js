@@ -52,6 +52,12 @@ async function getLivro(livro){
     return response;
   }
 
+  async function getAllLivroWithFilters(query){
+    const response = await Livro.findAll(query);
+
+    return response;
+  }
+
 
 module.exports = {
 getLivroByName,
@@ -61,4 +67,5 @@ getLivro,
 getAllLivro,
 updateLivro,
 deleteLivroById,
+getAllLivroWithFilters,
 }

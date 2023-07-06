@@ -9,8 +9,6 @@ require("./database");
 
 const port = process.env.PORT || 3003;
 
-console.log("senha: ",process.env.PASSWORD);
-
 app.use(express.json());
 app.use("/api/livro", routeLivro);
 app.use("/api/autor", routeAutor);

@@ -1,4 +1,8 @@
+const { response } = require("express");
 const LivroRepository = require("../Repositories/livroRepository");
+const Factory = require('../factory/Factory')
+const { Op } = require('sequelize')
+const Categoria = require( '../database/models/Categoria')
 
 async function validateCreateLivro(livro,categorias){
 
@@ -47,6 +51,59 @@ async function validateUpdateLivro(id,livro,categorias){
     }
 
 }
+/*  return {
+        nomeCotem,
+        precoMax,
+        minEstoque,
+        idsCategoria,
+        categorias,
+    }
+    
+    */
+function queryMakerByFilters(filters) {
+    const retorno = {
+        where: {
+            [Op.and]: [
+                { titulo: { [Op.startsWith]: filters.nomeCotem } },
+                { preco: { [Op.lte]: filters.precoMax } },
+                { estoque: { [Op.lte]: filters.minEstoque } }
+            ]
+        }
+    };
+      console.log(filters);
+    if (filters.categorias && filters.categorias.length > 0) {
+        retorno.include = [
+        {
+            model: Categoria,
+            as: 'categorias',
+                where: {
+                    id: { [Op.in]: filters.categorias }
+            },
+            attributes: ['id', 'nome'] 
+        }
+        ];
+    }
+      
+    return retorno;
+}
+      
+      
+
+async function getAllLivroWithFilters(filters) {
+    try {
+        const query = queryMakerByFilters(filters);
+        const SequelizeResponse = await LivroRepository.getAllLivroWithFilters(query);
+        const response = Factory.createResponseApi(200, SequelizeResponse);
+        
+        return response
+    } catch (error) {
+        console.log(error);
+        const response = Factory.createResponseApi(500, error);
+        return response
+    }
+
+
+}
 
 
 
@@ -54,4 +111,5 @@ async function validateUpdateLivro(id,livro,categorias){
 module.exports = {
     validateCreateLivro,
     validateUpdateLivro,
+    getAllLivroWithFilters,
 }

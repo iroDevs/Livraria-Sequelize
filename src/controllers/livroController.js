@@ -1,39 +1,26 @@
 const LivroService = require("../services/livroService")
 const LivroRepository = require("../Repositories/livroRepository")
+const Factory = require("../factory/Factory")
 
 async function createLivro(req,res){
-    const { categorias_id , autor_id,titulo , preco , estoque , descricao } = req.body;
-    const newLivro = {
-        autor_id,
-        titulo,
-        preco,
-        estoque,
-        descricao,
-    }
-
+    const { categorias_id } = req.body;
+    const newLivro = Factory.createLivro(req.body);
+    
     const response = await LivroService.validateCreateLivro(newLivro,categorias_id);
     return res.status(response.status).json(response);  
 }
 
 async function updateLivro(req,res){
     const { id } = req.params;
-    const { categorias_id , autor_id,titulo , preco , estoque , descricao } = req.body;
-
-    const newLivro = {
-        autor_id,
-        titulo,
-        preco,
-        estoque,
-        descricao,
-    }
-    
+    const { categorias_id } = req.body;
+    const newLivro = Factory.createLivro(req.body);
+   
     const response = await LivroService.validateUpdateLivro(id,newLivro,categorias_id);
     return res.status(response.status).json(response.data);
 }
 
 async function deleteLivro(req,res){
     const { id } = req.params;
-
     const response = await LivroRepository.deleteLivroById(id);
 
     if (response) {
@@ -60,6 +47,13 @@ async function getAllLivro(req,res){
     return res.status(200).json(response);
 }
 
+async function getLivroWithFilters(req,res) {
+    const filter = Factory.createFilter(req.body)
+    const response = await LivroService.getAllLivroWithFilters(filter);
+
+    return res.status(response.status).json(response)
+}
+
 
 
 module.exports = {
@@ -68,4 +62,5 @@ module.exports = {
     deleteLivro,
     getLivroById,
     getAllLivro,
+    getLivroWithFilters,
 }

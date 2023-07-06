@@ -9,6 +9,7 @@ routeLivro.get("/:id",LivroController.getLivroById);
 
 routeLivro.post("/",LivroController.createLivro);
 
+routeLivro.post("/filter",LivroController.getLivroWithFilters);
 
 routeLivro.put("/:id",LivroController.updateLivro);
 

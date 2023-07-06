@@ -7,6 +7,7 @@ class Categoria extends Model {
         },{
             sequelize,
             tableName: 'categorias',
+            modelName:'Categoria',
             freezeTableName: true
             
         })
