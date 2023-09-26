@@ -38,4 +38,11 @@ npx sequelize seed:generate --name=NOME_DA_SEEDER
 npx sequelize db:seed:all 
 ```
 
+## Rodar Uma seeder:
+```bash
+npx sequelize-cli db:seed --seed <Nome.js>
+```
+
+
+
 
